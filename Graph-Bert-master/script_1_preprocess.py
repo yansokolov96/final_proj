@@ -1,6 +1,11 @@
+import random
+
+
 import numpy as np
 import torch
 import os
+
+from cffi.backend_ctypes import xrange
 
 from code.DatasetLoader import DatasetLoader
 from code.MethodWLNodeColoring import MethodWLNodeColoring
@@ -97,7 +102,7 @@ if 1:
         print('************ Finish ************')
 #------------------------------------
 
-#---- Step 3: Shortest path: hop distance among nodes ----
+ #---- Step 3: Shortest path: hop distance among nodes ----
 if 1:
     for k in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
         print('************ Start ************')

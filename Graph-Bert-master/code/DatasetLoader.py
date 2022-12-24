@@ -4,6 +4,9 @@ Concrete IO class for a specific dataset
 
 # Copyright (c) 2017 Jiawei Zhang <jwzhanggy@gmail.com>
 # License: TBD
+import random
+
+from cffi.backend_ctypes import xrange
 
 from code.base_class.dataset import dataset
 import torch
@@ -102,6 +105,11 @@ class DatasetLoader(dataset):
         index_id_map = {i: j for i, j in enumerate(idx)}
         edges_unordered = np.genfromtxt("{}/link".format(self.dataset_source_folder_path),
                                         dtype=np.int32)
+        ##########################
+        print('##########################')
+        print(idx_features_labels)
+        print('##########################')
+        ##########################
         edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
                          dtype=np.int32).reshape(edges_unordered.shape)
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
@@ -116,7 +124,7 @@ class DatasetLoader(dataset):
         norm_adj = self.adj_normalize(adj + sp.eye(adj.shape[0]))
 
         if self.dataset_name == 'cora':
-            idx_train = range(400)
+            idx_train = range(500)
             idx_test = range(500, 1500)
             idx_val = range(1500, 1700)
         elif self.dataset_name == 'citeseer':

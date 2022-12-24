@@ -60,6 +60,7 @@ data_obj.dataset_name = dataset_name
 data_obj.k = k
 data_obj.load_all_tag = True
 
+
 bert_config = GraphBertConfig(residual_type=residual_type, k=k, x_size=nfeature, y_size=y_size,
                               hidden_size=hidden_size, intermediate_size=intermediate_size,
                               num_attention_heads=num_attention_heads, num_hidden_layers=num_hidden_layers)
@@ -73,9 +74,12 @@ method_obj.lr = lr
 loaded_data = data_obj.load()
 model = method_obj.from_pretrained('./result/PreTrained_GraphBert/' + dataset_name + '/node_classification_complete_model/',config=bert_config)
 model.data = loaded_data
+
 output = model.forward(loaded_data['raw_embeddings'], loaded_data['wl_embedding'], loaded_data['int_embeddings'],
                        loaded_data['hop_embeddings'], loaded_data['idx_test'])
-print(output)
-print(output.max(1)[1])
+clusters_net = output.max(1)[1]
 print("#####################################################")
+a = loaded_data['X'][loaded_data['idx_test']].numpy()
+b = np.array(a)
+print(np.squeeze(b))
 #print(loaded_data['y'][loaded_data['idx_train']])
