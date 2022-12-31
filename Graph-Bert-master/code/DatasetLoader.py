@@ -106,9 +106,9 @@ class DatasetLoader(dataset):
         edges_unordered = np.genfromtxt("{}/link".format(self.dataset_source_folder_path),
                                         dtype=np.int32)
         ##########################
-        print('##########################')
-        print(idx_features_labels)
-        print('##########################')
+#        print('##########################')
+#        print(idx_features_labels)
+#        print('##########################')
         ##########################
         edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
                          dtype=np.int32).reshape(edges_unordered.shape)
