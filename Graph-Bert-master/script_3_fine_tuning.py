@@ -1,6 +1,8 @@
 from code.DatasetLoader import DatasetLoader
 from code.MethodBertComp import GraphBertConfig
 from code.MethodGraphBertNodeClassification import MethodGraphBertNodeClassification
+from code.MethodGraphBertGraphClustering import MethodGraphBertGraphClustering
+
 from code.ResultSaving import ResultSaving
 from code.Settings import Settings
 import numpy as np

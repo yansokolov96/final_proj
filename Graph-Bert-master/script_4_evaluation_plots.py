@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from code.ResultSaving import ResultSaving
+from code.EvaluateClustering import EvaluateClustering
 
 #---------- clustering results evaluation -----------------
 

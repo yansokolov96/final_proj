@@ -17,7 +17,7 @@ for id, idx in enumerate(edges_temp):
     if (idx[0] in temp_idx) & (idx[1] in temp_idx):
         index_list.append(id)
 
-k = len(index_list) * 10 // 100
+k = len(index_list) * 20 // 100
 indicies = random.sample(xrange(len(index_list)), k)
 #delte_index = [index_list[i] for i in indicies]
 print(indicies)

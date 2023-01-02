@@ -14,14 +14,54 @@ import numpy as np
 import torch
 import matplotlib.lines as mlines
 import hungarian_algorithm
+import sys
+from sklearn.cluster import KMeans
+from sklearn import datasets
+from sklearn.metrics import confusion_matrix
+
+from munkres import Munkres
+
+from temp import accuracy, make_cost_matrix, translate_clustering
+
 number_of_cluster = 7
 
 def load_and_change_cluster2(clusters_net_t):
     clusters_Orig = np.genfromtxt(dataset_source_folder_path + str(len(clusters_net_t)), dtype=np.int32)
-    clust_orig_group = dict()
+    # clust_orig_group = dict()
+    classes = clusters_Orig
+    labels = clusters_net_t
+    cm = confusion_matrix(classes, labels, labels=range(7))  # gets the confusion matrix
+    print("---------------------\nold confusion matrix:\n" \
+          " %s\naccuracy: %.2f" % (str(cm), accuracy(cm)))
 
+    cost_matrix = make_cost_matrix(labels, classes)
+
+    m = Munkres()
+    indexes = m.compute(cost_matrix)
+    mapper = {old: new for (old, new) in indexes}
+
+    print("---------------------\nmapping:")
+    for old, new in mapper.items():
+        print("map: %s --> %s" % (old, new))
+
+    new_labels = translate_clustering(labels, mapper)
+    new_cm = confusion_matrix(classes, new_labels, labels=range(7))
+    print("---------------------\nnew confusion matrix:\n"" %s\naccuracy: %.2f" % (str(new_cm), accuracy(new_cm)))
+
+    import seaborn as sns
+    #sns.set_theme()
+    from matplotlib import pyplot as plt
+    plt.figure()
+    l = [f"c{i}" for i in range(1,number_of_cluster+1)]
+    ax = sns.heatmap(new_cm, cmap="YlGn", annot=True, xticklabels=l, yticklabels=l, cbar=True, fmt=',')
+    ax.set(title="conf", xlabel="Predict", ylabel="True")
+    ax.get_figure().show()
+    #ax.get_figure().savefig(filename)
+    return new_labels
+
+'''
     for i, c in enumerate(clusters_Orig):
-        if  c not in clust_orig_group:
+        if c not in clust_orig_group:
             clust_orig_group[c] = {i}
         else:
             clust_orig_group[c].add(i)
@@ -42,14 +82,16 @@ def load_and_change_cluster2(clusters_net_t):
         return i/u
 
     dist = np.fromfunction(np.vectorize(myIOU),(number_of_cluster,number_of_cluster))
-    m = np.argmax(dist,axis=0)
+    print(dist)
+    m = np.argmax(dist, axis=0)
+    print(m)
 
     res = np.zeros([len(clusters_net_t)])
-    for i,c in enumerate(m):
+    for i, c in enumerate(m):
         res[list(clust_net_group[c])] = i
 
     return res
-
+'''
 
 def load_and_change_cluster(clusters_net_t):
     clusters_Orig = np.genfromtxt(dataset_source_folder_path + str(len(clusters_net_t)), dtype=np.int32)
@@ -157,19 +199,21 @@ reducer = umap.UMAP()
 embedding = reducer.fit_transform(array_features)
 temp = np.array(embedding[500:1500], dtype=np.float32)
 '''
-pca = PCA(n_components=2)
+pca = PCA(n_components=3)
 # prepare transform on dataset
 pca.fit(array_features)
 # apply transform to dataset
 transformed = pca.transform(array_features)
-# tsne = TSNE(n_components=2, verbose=1, random_state=123)
-# transformed = tsne.fit_transform(array_features)
+#tsne = TSNE(n_components=2, verbose=1, random_state=123)
+#transformed = tsne.fit_transform(array_features)
 
 x = []
 y = []
+z = []
 for i in transformed[500:1500]:
     x.append(i[0])
     y.append(i[1])
+    z.append(i[2])
 # colorsa = np.array(["r" for _ in range(7)])
 colorsa =dict()
 # ["#0000FF", "#00FF00", "#FF0066"]
@@ -195,19 +239,21 @@ colorsa[6] = "y"
 
 plt.rcParams["figure.figsize"] = [7.00, 3.50]
 plt.rcParams["figure.autolayout"] = True
-
+print(clusters_net)
 ans = os.path.exists(dataset_source_folder_path + str(len(clusters_net)))
 if not ans:
     np.savetxt(dataset_source_folder_path + str(len(clusters_net)), np.array(clusters_net, dtype=int), fmt="%s")
 else:
     clusters_net = load_and_change_cluster2(np.array(clusters_net, dtype=int))
-
+print(clusters_net)
 fig = plt.figure()
-ax = fig.add_subplot(111)
+ax = fig.add_subplot(111, projection='3d')
+
 # for i in range(len(x)):
 #     scatter = ax.scatter(x[i], y[i], color=colorsa[clusters_net[i]])
 color = np.vectorize(lambda c:colorsa[c])
-scatter = ax.scatter(x, y, color=color(clusters_net))
+
+scatter = ax.scatter(x, y, z, color=color(clusters_net))
 # plt.legend(["c1 - blue", "c2 - cyan", "c3 - green", "c4 - black", "c5 - magenta", "c6 - red", "c7 - yellow"])
 # legend1 = ax.legend(*scatter.legend_elements())
 
@@ -219,7 +265,7 @@ c5 = mlines.Line2D([], [], color='m', marker=".", linestyle='None', markersize=1
 c6 = mlines.Line2D([], [], color='r', marker=".", linestyle='None', markersize=10, label='c6')
 c7 = mlines.Line2D([], [], color='y', marker=".", linestyle='None', markersize=10, label='c7')
 
-plt.legend(handles=[c1, c2, c3, c5, c6, c7])
+plt.legend(handles=[c1, c2, c3, c4, c5, c6, c7])
 
 # plt.legend(c=colorsa,label=["c1 - blue", "c2 - cyan", "c3 - green", "c4 - black", "c5 - magenta", "c6 - red", "c7 - yellow"])
 plt.show()
