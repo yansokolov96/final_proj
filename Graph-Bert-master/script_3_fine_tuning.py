@@ -46,7 +46,7 @@ if 1:
     elif dataset_name == 'cora':
         lr = 0.01
         k = 7
-        max_epoch = 150 # 150 ---- do an early stop when necessary ----
+        max_epoch = 200 # 150 ---- do an early stop when necessary ----
     elif dataset_name == 'citeseer':
         k = 5
         lr = 0.001
@@ -107,7 +107,7 @@ if 1:
 #    print(loaded_data['y'][loaded_data['idx_train']])
 
 #---- Fine-Tuning Task 2: Graph Bert Graph Clustering (Cora, Citeseer, and Pubmed) ----
-if 0:
+if 1:
     #---- hyper-parameters ----
     if dataset_name == 'pubmed':
         lr = 0.001

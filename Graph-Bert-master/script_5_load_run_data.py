@@ -21,9 +21,36 @@ from sklearn.metrics import confusion_matrix
 
 from munkres import Munkres
 
-from temp import accuracy, make_cost_matrix, translate_clustering
 
 number_of_cluster = 7
+
+def make_cost_matrix(c1, c2):
+    """
+    """
+    uc1 = np.unique(c1)
+    uc2 = np.unique(c2)
+    l1 = uc1.size
+    l2 = uc2.size
+    assert (l1 == l2 and np.all(uc1 == uc2))
+
+    m = np.ones([l1, l2])
+    for i in range(l1):
+        it_i = np.nonzero(c1 == uc1[i])[0]
+        for j in range(l2):
+            it_j = np.nonzero(c2 == uc2[j])[0]
+            m_ij = np.intersect1d(it_j, it_i)
+            m[i, j] = -m_ij.size
+    return m
+
+
+def translate_clustering(clt, mapper):
+    return np.array([mapper[i] for i in clt])
+
+
+def accuracy(cm):
+    """computes accuracy from confusion matrix"""
+    return np.trace(cm, dtype=float) / np.sum(cm)
+
 
 def load_and_change_cluster2(clusters_net_t):
     clusters_Orig = np.genfromtxt(dataset_source_folder_path + str(len(clusters_net_t)), dtype=np.int32)

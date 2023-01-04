@@ -76,7 +76,7 @@ if 1:
         depth_result_dict[depth] = result_obj.load()
     print(depth_result_dict)
 
-    x = range(150)
+    x = range(200)
 
     plt.figure(figsize=(4, 3))
     for depth in depth_list:
@@ -84,7 +84,7 @@ if 1:
         train_acc = [depth_result_dict[depth][i]['acc_train'] for i in x]
         plt.plot(x, train_acc, label='GraphBert(' + str(depth) + '-layer)')
 
-    plt.xlim(0, 150)
+    plt.xlim(0, 200)
     plt.ylabel("training accuracy %")
     plt.xlabel("epoch (iter. over training set)")
     plt.legend(loc="lower right", fontsize='small')
@@ -96,7 +96,7 @@ if 1:
         plt.plot(x, test_acc, label='DifNet(' + str(depth) + '-layer)')
         best_score[depth] = max(test_acc)
 
-    plt.xlim(0, 150)
+    plt.xlim(0, 200)
     plt.ylabel("testing accuracy %")
     plt.xlabel("epoch (iter. over training set)")
     plt.legend(loc="lower right", fontsize='small')
