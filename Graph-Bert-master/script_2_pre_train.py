@@ -103,19 +103,19 @@ if 1:
     if dataset_name == 'pubmed':
         lr = 0.001
         k = 30
-        max_epoch = 200 # ---- do an early stop when necessary ----
+        max_epoch = 150 # ---- do an early stop when necessary ----
     elif dataset_name == 'cora':
         lr = 0.001
         k = 7
-        max_epoch = 200 # ---- do an early stop when necessary ----
+        max_epoch = 150 # ---- do an early stop when necessary ----
     elif dataset_name == 'citeseer':
         k = 5
         lr = 0.001
-        max_epoch = 200 # it takes a long epochs to converge, probably more than 2000
+        max_epoch = 150 # it takes a long epochs to converge, probably more than 2000
     else:
         k=5
         lr = 0.01
-        max_epoch = 200
+        max_epoch = 150
 
     x_size = nfeature
     hidden_size = intermediate_size = 32

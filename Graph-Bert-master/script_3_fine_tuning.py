@@ -37,7 +37,7 @@ elif dataset_name == 'pubmed':
 
 
 #---- Fine-Tuning Task 1: Graph Bert Node Classification (Cora, Citeseer, and Pubmed) ----
-if 1:
+if 0:
     #---- hyper-parameters ----
     if dataset_name == 'pubmed':
         lr = 0.001
@@ -46,7 +46,7 @@ if 1:
     elif dataset_name == 'cora':
         lr = 0.01
         k = 7
-        max_epoch = 200 # 150 ---- do an early stop when necessary ----
+        max_epoch = 150 # 150 ---- do an early stop when necessary ----
     elif dataset_name == 'citeseer':
         k = 5
         lr = 0.001
@@ -112,7 +112,7 @@ if 1:
     if dataset_name == 'pubmed':
         lr = 0.001
         k = 30
-        max_epoch = 500 # 500 ---- do an early stop when necessary ----
+        max_epoch = 150 # 500 ---- do an early stop when necessary ----
     elif dataset_name == 'cora':
         lr = 0.01
         k = 7
@@ -120,7 +120,7 @@ if 1:
     elif dataset_name == 'citeseer':
         k = 5
         lr = 0.001
-        max_epoch = 2000 #2000 # it takes a long epochs to converge, probably more than 2000
+        max_epoch = 150 #2000 # it takes a long epochs to converge, probably more than 2000
 
     x_size = nfeature
     hidden_size = intermediate_size = 32

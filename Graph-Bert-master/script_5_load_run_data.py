@@ -73,6 +73,7 @@ def load_and_change_cluster2(clusters_net_t):
 
     new_labels = translate_clustering(labels, mapper)
     new_cm = confusion_matrix(classes, new_labels, labels=range(7))
+
     print("---------------------\nnew confusion matrix:\n"" %s\naccuracy: %.2f" % (str(new_cm), accuracy(new_cm)))
 
     import seaborn as sns
@@ -81,9 +82,11 @@ def load_and_change_cluster2(clusters_net_t):
     plt.figure()
     l = [f"c{i}" for i in range(1,number_of_cluster+1)]
     ax = sns.heatmap(new_cm, cmap="YlGn", annot=True, xticklabels=l, yticklabels=l, cbar=True, fmt=',')
-    ax.set(title="conf", xlabel="Predict", ylabel="True")
+    ax.set(title="Confusion Matrix", xlabel="Predict", ylabel="True")
     ax.get_figure().show()
     #ax.get_figure().savefig(filename)
+    #np.savetxt(data_sve_temp + "file5", np.array(new_labels, dtype=int), fmt="%s")
+
     return new_labels
 
 '''
@@ -151,6 +154,7 @@ def load_and_change_cluster(clusters_net_t):
 from code.base_class.method import method
 
 dataset_source_folder_path = './result/taged_nodes/'
+data_sve_temp = './result/temp20p/'
 dataset_name = 'cora'
 
 np.random.seed(1)
