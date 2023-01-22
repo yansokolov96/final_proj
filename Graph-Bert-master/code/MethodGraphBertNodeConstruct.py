@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
+from tqdm import tk
 
 from transformers.models.bert.modeling_bert import BertPreTrainedModel
 from code.MethodGraphBert import MethodGraphBert
@@ -8,6 +9,19 @@ from code.MethodGraphBert import MethodGraphBert
 import time
 
 BertLayerNorm = torch.nn.LayerNorm
+
+def updateGUI(Progress_Bar_Precentage,GUI_Text,GUI,update_progress=None):
+    global GUI_Total_Text,progressPercentage
+    GUI_Total_Text = "\n\n" + GUI_Text
+    GUI.delete(1.0, tk.END)
+    GUI.insert(tk.END, GUI_Total_Text)
+    progressPercentage += Progress_Bar_Precentage
+    GUI.see(tk.END)
+
+    if progressPercentage > 100: progressPercentage = 100
+
+    if update_progress:
+        update_progress(progressPercentage, 100)  # Update progress to 1%
 
 class MethodGraphBertNodeConstruct(BertPreTrainedModel):
     learning_record_dict = {}
@@ -17,8 +31,10 @@ class MethodGraphBertNodeConstruct(BertPreTrainedModel):
     load_pretrained_path = ''
     save_pretrained_path = ''
 
-    def __init__(self, config):
-        super(MethodGraphBertNodeConstruct, self).__init__(config)
+    def __init__(self, config,GUI=None, update_progress=None, *args, **kwargs):
+        super(MethodGraphBertNodeConstruct, self).__init__(config,*args, **kwargs)
+        self.GUI = GUI
+        self.update_progress = update_progress
         self.config = config
         self.bert = MethodGraphBert(config)
         self.cls_y = torch.nn.Linear(config.hidden_size, config.x_size)
@@ -38,7 +54,7 @@ class MethodGraphBertNodeConstruct(BertPreTrainedModel):
         return x_hat
 
 
-    def train_model(self, max_epoch):
+    def train_model(self, max_epoch,GUI = None,update_progress=None):
         t_begin = time.time()
         optimizer = optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         for epoch in range(max_epoch):
@@ -60,16 +76,18 @@ class MethodGraphBertNodeConstruct(BertPreTrainedModel):
 
             # -------------------------
             if epoch % 50 == 0:
-                print('Epoch: {:04d}'.format(epoch + 1),
-                      'loss_train: {:.4f}'.format(loss_train.item()),
-                      'time: {:.4f}s'.format(time.time() - t_epoch_begin))
+                toPrint = 'Epoch: {:04d}'.format(epoch + 1), 'loss_train: {:.4f}'.format(loss_train.item()), 'time: {:.4f}s'.format(time.time() - t_epoch_begin)
+                updateGUI(1,toPrint,GUI, update_progress)
+                print(toPrint)
 
+        updateGUI(1, "Optimization Finished!", GUI, update_progress)
+        updateGUI(1, "Total time elapsed: {:.4f}s".format(time.time() - t_begin), GUI, update_progress)
         print("Optimization Finished!")
         print("Total time elapsed: {:.4f}s".format(time.time() - t_begin))
         return time.time() - t_begin
 
     def run(self):
 
-        self.train_model(self.max_epoch)
+        self.train_model(self.max_epoch,GUI = None,update_progress = None)
 
         return self.learning_record_dict
