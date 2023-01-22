@@ -1,6 +1,7 @@
 import torch
 
-from transformers.models.bert.modeling_bert import BertPreTrainedModel
+from transformers.models.bert.modeling_bert import BertPreTrainedModel, BertPooler
+
 from code.MethodGraphBert import MethodGraphBert
 
 import time
